@@ -73,6 +73,14 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-gtm-addon-scripts.php';
  *
  * @since    1.0.0
  */
+
+require plugin_dir_path( __FILE__ ) . 'plugin-update-checker/plugin-update-checker.php';
+$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+	'https://raw.githubusercontent.com/prakharbhatia/GTM-Addon-Scripts/419c170ff09bce88f90cf0ea1e568a421bfe020d/plugin-update-checker/examples/plugin.json',
+	__FILE__, //Full path to the main plugin file or functions.php.
+	'gtm-addon-scripts'
+);
+
 function run_gtm_addon_scripts() {
 
 	$plugin = new Gtm_Addon_Scripts();
@@ -80,3 +88,4 @@ function run_gtm_addon_scripts() {
 
 }
 run_gtm_addon_scripts();
+
