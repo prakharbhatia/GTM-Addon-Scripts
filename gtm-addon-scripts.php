@@ -16,7 +16,7 @@
  * Plugin Name:       GTM Addon Scripts
  * Plugin URI:        https://nandann.com/
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.1.0
+ * Version:           1.0.0
  * Author:            Prakhar Bhatia
  * Author URI:        https://nandann.com/
  * License:           GPL-2.0+
@@ -80,7 +80,53 @@ $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 	__FILE__, //Full path to the main plugin file or functions.php.
 	'gtm-addon-scripts'
 );
+//plugin admin scripts start
 
+class GTMAddonScriptsPlugin {
+  function __construct() {
+    add_action('admin_menu', array($this, 'adminPage'));
+    add_action('admin_init', array($this, 'settings'));
+  }
+
+function settings() {
+add_settings_section('gtm_first_section', null, null, 'gtm-addon-scripts-settings');
+
+add_settings_field('gtm_headcode', 'Header Code', array($this, 'headcodeHTML'), 'gtm-addon-scripts-settings', 'gtm_first_section');
+register_setting('gtmAddonScriptsPlugin', 'gtm_headcode', array('sanitize_callback' => null, 'default' => '0')); 
+
+add_settings_field('gtm_bodycode', 'Body Code', array($this, 'bodycodeHTML'), 'gtm-addon-scripts-settings', 'gtm_first_section');
+register_setting('gtmAddonScriptsPlugin', 'gtm_bodycode', array('sanitize_callback' => null, 'default' => '0'));
+}
+function bodycodeHTML() { ?>
+<textarea cols="70" rows="11" name="gtm_bodycode"><?php  echo esc_attr(get_option('gtm_bodycode')); ?></textarea>
+<?php }
+
+function headcodeHTML() {  ?>
+<textarea cols="70" rows="11"  name="gtm_headcode"><?php echo esc_attr(get_option('gtm_headcode')); ?></textarea>
+	<?php }
+	
+
+function adminPage() {
+  add_menu_page('GTM Scripts Settings', 'GTM Scripts', 'manage_options', 'gtm-addon-scripts-settings', array($this, 'ourHTML')); 
+}
+
+function ourHTML() { ?>
+<div class="wrap">
+	<h1>GTM Scripts Settings</h1>
+	<h3>Please enter the code for the header and body.</h3>
+  <form action="options.php" method="POST">
+    <?php
+    settings_fields('gtmAddonScriptsPlugin');
+    do_settings_sections('gtm-addon-scripts-settings');
+    submit_button();
+    ?>
+    </form>
+</div>
+<?php } 
+
+}
+$gtmAddonScriptsPlugin = new GTMAddonScriptsPlugin();
+//plugin admin scripts ends
 function run_gtm_addon_scripts() {
 
 	$plugin = new Gtm_Addon_Scripts();
